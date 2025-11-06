@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // 💡 الإضافة المطلوبة: حقل الدور (Admin أو Author)
+            $table->enum('role', ['admin', 'author'])->default('author'); 
             $table->rememberToken();
             $table->timestamps();
         });
