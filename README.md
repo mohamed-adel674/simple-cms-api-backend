@@ -1,59 +1,30 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Simple Headless CMS Backend API (Laravel Sanctum)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a streamlined, **API-only Content Management System (CMS)** built using **Laravel**. It serves as a robust backend (Headless CMS) ready to be consumed by any modern frontend application (React, Vue, mobile apps, etc.). The focus is on implementing **RESTful principles, robust authentication (Sanctum),** and **granular authorization (Policies)**.
 
-## About Laravel
+## ✨ Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* **Authentication & Authorization:** Secure API access via **Laravel Sanctum** using Bearer Tokens.
+* **User Roles:** Implemented basic roles (`Admin`, `Author`) for clear privilege separation.
+* **Posts Management:** Full CRUD (Create, Read, Update, Delete) for articles, including status (`draft`, `published`).
+* **Categories Management:** CRUD operations for categorizing content (Admin-only).
+* **Comments System:** Public commenting feature with mandatory **Admin approval** before publication.
+* **Security:** HTML content sanitization is assumed/required for WYSIWYG inputs (`Post body`) to prevent XSS attacks.
+* **RESTful Design:** Clean, resource-based API endpoints.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Installation and Setup
 
-## Learning Laravel
+Follow these steps to get the project running locally:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Clone the Repository
+```bash
+git clone [YOUR_GITHUB_REPO_URL]
+cd simple-cms-api
+2. Install DependenciesBashcomposer install
+3. Environment ConfigurationCreate your environment file and generate an application key:Bashcp .env.example .env
+php artisan key:generate
+Important: Update the DB_DATABASE, DB_USERNAME, and DB_PASSWORD variables in your .env file to match your local database settings (e.g., MySQL or PostgreSQL).4. Database SetupRun migrations to create the necessary tables:Bashphp artisan migrate
+5. Running the ServerStart the Laravel development server:Bashphp artisan serve
+The API will typically be available at http://127.0.0.1:8000/api.🧪 API Endpoints for Postman TestingThe following table summarizes the core API endpoints. All protected routes require a Bearer Token obtained via the /api/login endpoint.1. Authentication (Public)DescriptionMethodEndpointBody DataRegisterPOST/api/registername, email, password, password_confirmationLoginPOST/api/loginemail, passwordLogoutPOST/api/logout(Requires Token)2. Posts & Public ViewingDescriptionMethodEndpointAuthorization / RoleView All PostsGET/api/postsPublic (Only shows published posts)View Single PostGET/api/posts/{slug}Public (Checks post status)Create PostPOST/api/postsAuthor or AdminUpdate PostPATCH/api/posts/{id}Post Owner or Admin (via Policy)Delete PostDELETE/api/posts/{id}Post Owner or Admin (via Policy)3. Categories and Comments Management (Admin Focus)DescriptionMethodEndpointRole RequiredView All CategoriesGET/api/categoriesPublicCreate CategoryPOST/api/categoriesAdminUpdate/Delete CategoryPATCH/DELETE/api/categories/{id}AdminAdd CommentPOST/api/posts/{id}/commentsPublic / GuestApprove CommentPATCH/api/comments/{id}/approveAdminDelete CommentDELETE/api/comments/{id}Admin🔑 Authorization Logic (Laravel Policies)The following permissions are enforced via Laravel's built-in Policies and the role column in the users table:ActionGuestAuthorAdminView Published Posts✅✅✅Create Post❌✅✅Update/Delete Own Post❌✅✅Update/Delete Other's Post❌❌✅Manage Categories (CRUD)❌❌✅Approve Comments❌❌✅
