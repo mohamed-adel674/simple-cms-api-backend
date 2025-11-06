@@ -22,9 +22,64 @@ Follow these steps to get the project running locally:
 ```bash
 git clone [YOUR_GITHUB_REPO_URL]
 cd simple-cms-api
-2. Install DependenciesBashcomposer install
-3. Environment ConfigurationCreate your environment file and generate an application key:Bashcp .env.example .env
+
+2. Install Dependencies
+composer install
+
+3. Environment Configuration
+Create your environment file and generate an application key:
+
+cp .env.example .env
 php artisan key:generate
-Important: Update the DB_DATABASE, DB_USERNAME, and DB_PASSWORD variables in your .env file to match your local database settings (e.g., MySQL or PostgreSQL).4. Database SetupRun migrations to create the necessary tables:Bashphp artisan migrate
-5. Running the ServerStart the Laravel development server:Bashphp artisan serve
-The API will typically be available at http://127.0.0.1:8000/api.🧪 API Endpoints for Postman TestingThe following table summarizes the core API endpoints. All protected routes require a Bearer Token obtained via the /api/login endpoint.1. Authentication (Public)DescriptionMethodEndpointBody DataRegisterPOST/api/registername, email, password, password_confirmationLoginPOST/api/loginemail, passwordLogoutPOST/api/logout(Requires Token)2. Posts & Public ViewingDescriptionMethodEndpointAuthorization / RoleView All PostsGET/api/postsPublic (Only shows published posts)View Single PostGET/api/posts/{slug}Public (Checks post status)Create PostPOST/api/postsAuthor or AdminUpdate PostPATCH/api/posts/{id}Post Owner or Admin (via Policy)Delete PostDELETE/api/posts/{id}Post Owner or Admin (via Policy)3. Categories and Comments Management (Admin Focus)DescriptionMethodEndpointRole RequiredView All CategoriesGET/api/categoriesPublicCreate CategoryPOST/api/categoriesAdminUpdate/Delete CategoryPATCH/DELETE/api/categories/{id}AdminAdd CommentPOST/api/posts/{id}/commentsPublic / GuestApprove CommentPATCH/api/comments/{id}/approveAdminDelete CommentDELETE/api/comments/{id}Admin🔑 Authorization Logic (Laravel Policies)The following permissions are enforced via Laravel's built-in Policies and the role column in the users table:ActionGuestAuthorAdminView Published Posts✅✅✅Create Post❌✅✅Update/Delete Own Post❌✅✅Update/Delete Other's Post❌❌✅Manage Categories (CRUD)❌❌✅Approve Comments❌❌✅
+Important: Update the DB_DATABASE, DB_USERNAME, and DB_PASSWORD variables in your .env file to match your local database settings (e.g., MySQL or PostgreSQL).
+
+4. Database Setup
+
+Run migrations to create the necessary tables:
+
+php artisan migrate
+
+
+5. Running the Server
+Start the Laravel development server:
+
+php artisan serve
+The API will typically be available at http://127.0.0.1:8000/api.
+
+##🧪 API Endpoints for Postman Testing
+The following table summarizes the core API endpoints. All protected routes require a Bearer Token obtained via the /api/login endpoint.
+
+1. Authentication (Public)
+Description	Method	Endpoint	Body Data
+Register	POST	/api/register	name, email, password, password_confirmation
+Login	POST	/api/login	email, password
+Logout	POST	/api/logout	(Requires Token)
+
+2. Posts & Public Viewing
+Description	Method	Endpoint	Authorization / Role
+View All Posts	GET	/api/posts	Public (Only shows published posts)
+View Single Post	GET	/api/posts/{slug}	Public (Checks post status)
+Create Post	POST	/api/posts	Author or Admin
+Update Post	PATCH	/api/posts/{id}	Post Owner or Admin (via Policy)
+Delete Post	DELETE	/api/posts/{id}	Post Owner or Admin (via Policy)
+
+3. Categories and Comments Management (Admin Focus)
+Description	Method	Endpoint	Role Required
+View All Categories	GET	/api/categories	Public
+Create Category	POST	/api/categories	Admin
+Update/Delete Category	PATCH/DELETE	/api/categories/{id}	Admin
+Add Comment	POST	/api/posts/{id}/comments	Public / Guest
+Approve Comment	PATCH	/api/comments/{id}/approve	Admin
+Delete Comment	DELETE	/api/comments/{id}	Admin
+
+
+🔑 Authorization Logic (Laravel Policies)
+The following permissions are enforced via Laravel's built-in Policies and the role column in the users table:
+
+Action              	Guest	Author	Admin
+View Published Posts	✅   	✅	     ✅
+Create Post	            ❌  	✅	     ✅
+Update/Delete Own Post	❌   	✅      ✅
+Update/Delete Other's Post❌   ❌  	✅
+Manage Categories (CRUD)❌	   ❌	    ✅
+Approve Comments	    ❌	   ❌   	✅
